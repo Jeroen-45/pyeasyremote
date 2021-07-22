@@ -50,10 +50,29 @@ class EasyRemoteObject:
         Returns the appropriate object for the given type. Returns the
         generic EasyRemoteObject if the type is not (yet) supported.
         """
-        if type == 'cw':
+        if type == 'btn':
+            return EasyRemoteButton(id, page, name)
+        elif type == 'cw':
             return EasyRemoteColorwheel(id, page, name)
         else:
             return EasyRemoteObject(id, page, name)
+
+
+class EasyRemoteButton(EasyRemoteObject):
+    """
+    This object represents a button in EasyRemote.
+    """
+    def __init__(self, id: int, page: int, name: str) -> None:
+        super().__init__(id, page, name)
+
+    def set_state(self, er: EasyRemote, state: bool) -> None:
+        """
+        Sets the button to the given state(True = on).
+        """
+        # Send EasyRemote update_element event for this button
+        # with the given state.
+        er.s.sendto((f"action=update_element&id={self.id}&page={self.page}"
+                     f"&value={int(state)}&type=btn&event=up").encode(), er.addr)
 
 
 class EasyRemoteColorwheel(EasyRemoteObject):
@@ -77,7 +96,7 @@ class EasyRemoteColorwheel(EasyRemoteObject):
         s = round(s * 255)
         v = round(v * 255)
 
-        # Send EasyRemote update_element event for the current colorwheel
+        # Send EasyRemote update_element event for this colorwheel
         # with the given hue, saturation and value.
         er.s.sendto((f"action=update_element&id={self.id}&page={self.page}"
                      f"&value={h},{s},{v}&type=cw&event=up").encode(), er.addr)
