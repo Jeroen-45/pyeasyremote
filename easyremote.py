@@ -18,14 +18,13 @@ class EasyRemote:
         recv_objects = True
         while recv_objects:
             msg = self.s.recvfrom(1024)[0].decode()
-            print(msg)
             action = parse_qs(msg)
 
             # Add appropriate object for each incoming set_layer action
             if action["action"][0] == "set_layer":
                 self.objects[action["name"][0]] = \
                     EasyRemoteObject.get_easy_remote_object(
-                        int(action["id"][0]), int(action["page"][0]),
+                        self, int(action["id"][0]), int(action["page"][0]),
                         action["name"][0], action["type"][0])
 
             # End the loop when the done action is received
@@ -38,57 +37,59 @@ class EasyRemoteObject:
     This object represents a single control in EasyRemote,
     like a dimmer or a colorwheel. Each type has its own subclass.
     """
-    def __init__(self, id: int, page: int, name: str) -> None:
+    def __init__(self, er: EasyRemote, id: int, page: int, name: str) -> None:
         self.id = id
         self.page = page
         self.name = name
+        self.er = er
 
     @staticmethod
-    def get_easy_remote_object(id: int, page: int, name: str,
+    def get_easy_remote_object(er: EasyRemote, id: int, page: int, name: str,
                                type: str) -> object:
         """
         Returns the appropriate object for the given type. Returns the
         generic EasyRemoteObject if the type is not (yet) supported.
         """
         if type == 'btn':
-            return EasyRemoteButton(id, page, name)
+            return EasyRemoteButton(er, id, page, name)
         elif type == 'cw':
-            return EasyRemoteColorwheel(id, page, name)
+            return EasyRemoteColorwheel(er, id, page, name)
         else:
-            return EasyRemoteObject(id, page, name)
+            return EasyRemoteObject(er, id, page, name)
 
 
 class EasyRemoteButton(EasyRemoteObject):
     """
     This object represents a button in EasyRemote.
     """
-    def __init__(self, id: int, page: int, name: str) -> None:
-        super().__init__(id, page, name)
+    def __init__(self, er: EasyRemote, id: int, page: int, name: str) -> None:
+        super().__init__(er, id, page, name)
 
-    def set_state(self, er: EasyRemote, state: bool) -> None:
+    def set_state(self, state: bool) -> None:
         """
         Sets the button to the given state(True = on).
         """
         # Send EasyRemote update_element event for this button
         # with the given state.
-        er.s.sendto((f"action=update_element&id={self.id}&page={self.page}"
-                     f"&value={int(state)}&type=btn&event=up").encode(), er.addr)
+        self.er.s.sendto((f"action=update_element&id={self.id}"
+                          f"&page={self.page}&value={int(state)}"
+                          "&type=btn&event=up").encode(), self.er.addr)
 
 
 class EasyRemoteColorwheel(EasyRemoteObject):
     """
     This object represents a colorwheel in EasyRemote.
     """
-    def __init__(self, id: int, page: int, name: str) -> None:
-        super().__init__(id, page, name)
+    def __init__(self, er: EasyRemote, id: int, page: int, name: str) -> None:
+        super().__init__(er, id, page, name)
 
-    def set_rgb(self, er: EasyRemote, r: int, g: int, b: int) -> None:
+    def set_rgb(self, r: int, g: int, b: int) -> None:
         """
         Sets the colorwheel to the given red, green, blue values.
         """
-        self.set_hsv(er, *rgb_to_hsv(r/255., g/255., b/255.))
+        self.set_hsv(*rgb_to_hsv(r/255., g/255., b/255.))
 
-    def set_hsv(self, er: EasyRemote, h: float, s: float, v: int) -> None:
+    def set_hsv(self, h: float, s: float, v: int) -> None:
         """
         Sets the colorwheel to the given hue, saturation and value.
         """
@@ -98,5 +99,6 @@ class EasyRemoteColorwheel(EasyRemoteObject):
 
         # Send EasyRemote update_element event for this colorwheel
         # with the given hue, saturation and value.
-        er.s.sendto((f"action=update_element&id={self.id}&page={self.page}"
-                     f"&value={h},{s},{v}&type=cw&event=up").encode(), er.addr)
+        self.er.s.sendto((f"action=update_element&id={self.id}"
+                          f"&page={self.page}&value={h},{s},{v}"
+                          "&type=cw&event=up").encode(), self.er.addr)
