@@ -54,6 +54,8 @@ class EasyRemoteObject:
             return EasyRemoteButton(er, id, page, name)
         elif type == 'sld':
             return EasyRemoteSlider(er, id, page, name)
+        elif type == 'pt':
+            return EasyRemotePanTilt(er, id, page, name)
         elif type == 'cw':
             return EasyRemoteColorwheel(er, id, page, name)
         else:
@@ -88,12 +90,32 @@ class EasyRemoteSlider(EasyRemoteObject):
     def set_value(self, value: int) -> None:
         """
         Sets the slider to the given value.
+        Values typically range from 0 to 255.
         """
         # Send EasyRemote update_element event for this slider
         # with the given value.
         self.er.s.sendto((f"action=update_element&id={self.id}"
                           f"&page={self.page}&value={value}"
                           "&type=sld&event=up").encode(), self.er.addr)
+
+
+class EasyRemotePanTilt(EasyRemoteObject):
+    """
+    This object represents a pan tilt control object in EasyRemote.
+    """
+    def __init__(self, er: EasyRemote, id: int, page: int, name: str) -> None:
+        super().__init__(er, id, page, name)
+
+    def set_pan_tilt(self, pan: int, tilt: int) -> None:
+        """
+        Sets the pan and tilt to the given values.
+        Values typically range from 0 to 65535.
+        """
+        # Send EasyRemote update_element event for this pan tilt control
+        # with the given pan and tilt values.
+        self.er.s.sendto((f"action=update_element&id={self.id}"
+                          f"&page={self.page}&value={pan},{tilt}"
+                          "&type=pt&event=up").encode(), self.er.addr)
 
 
 class EasyRemoteColorwheel(EasyRemoteObject):
@@ -106,12 +128,14 @@ class EasyRemoteColorwheel(EasyRemoteObject):
     def set_rgb(self, r: int, g: int, b: int) -> None:
         """
         Sets the colorwheel to the given red, green, blue values.
+        Values range from 0 to 255.
         """
         self.set_hsv(*rgb_to_hsv(r/255., g/255., b/255.))
 
     def set_hsv(self, h: float, s: float, v: int) -> None:
         """
         Sets the colorwheel to the given hue, saturation and value.
+        Values range from 0 to 1.
         """
         h = round(h * 360)
         s = round(s * 255)
