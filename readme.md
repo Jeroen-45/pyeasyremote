@@ -16,6 +16,8 @@ er.objects["My Button"].set_state(True)
 er.objects["My Slider"].set_value(255)
 # Set a pan tilt control named "My PanTilt" to the top right corner
 er.objects["My PanTilt"].set_pan_tilt(65535, 65535)
-# Set a colorwheel named "My Colorwheel" to red
+# Set a colorwheel named "My Colorwheel" to red using RGB
 er.objects["My Colorwheel"].set_rgb(255, 0, 0)
+# Set a colorwheel named "My Colorwheel" to red using HSV
+er.objects["My Colorwheel"].set_hsv(0.0, 1.0, 1.0)
 ````
