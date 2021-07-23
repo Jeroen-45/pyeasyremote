@@ -1,22 +1,24 @@
-from distutils.core import setup
-setup(
-    name = 'pyeasyremote',
-    packages = ['pyeasyremote'],
-    version = '0.1',
-    license='MIT',
-    description = 'Control Easy Remote supporting DMX Lighting control software using python ',
-    author = 'Jeroen45',
+import setuptools
+
+with open("README.md", "r") as fh:
+    long_description = fh.read()
+
+setuptools.setup(
+    name="pyeasyremote",
+    version="0.1",
+    author="Jeroen Tas",
     author_email = 'hi@j45.nl',
     url = 'https://github.com/Jeroen-45/pyeasyremote',
-    download_url = 'https://github.com/Jeroen-45/pyeasyremote/archive/refs/tags/v_0.1.tar.gz',
-    keywords = ['Easy Remote'],
+    description="Control Easy Remote supporting DMX Lighting control software using python",
+    long_description=long_description,
+    long_description_content_type="text/markdown",
+    packages=setuptools.find_packages(),
     classifiers=[
-        'Development Status :: 4 - Beta',
-        'Intended Audience :: Developers',
-        'License :: OSI Approved :: MIT License',
-        'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.6',
-        'Programming Language :: Python :: 3.7',
-        'Programming Language :: Python :: 3.8',
-  ],
+        "Programming Language :: Python :: 3",
+        "License :: OSI Approved :: MIT License",
+        "Operating System :: OS Independent",
+    ],
+    python_requires='>=3.6',
+    py_modules=["pyeasyremote"],
+    install_requires=[]
 )
