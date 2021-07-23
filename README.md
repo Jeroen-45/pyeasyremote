@@ -8,7 +8,7 @@ pyeasyremote can be used to control buttons, sliders, pan tilt controls and colo
 from pyeasyremote import EasyRemote
 
 # Initialize an EasyRemote
-er = EasyRemote("192.168.2.4")
+er = EasyRemote("192.168.1.100")
 
 # Turn on a button named "My Button" in your lighting software
 er.objects["My Button"].set_state(True)
