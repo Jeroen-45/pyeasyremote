@@ -8,7 +8,7 @@ setup(
     author = 'Jeroen45',
     author_email = 'hi@j45.nl',
     url = 'https://github.com/Jeroen-45/pyeasyremote',
-    download_url = 'https://github.com/Jeroen-45/pyeasyremote/v_01.tar.gz',
+    download_url = 'https://github.com/Jeroen-45/pyeasyremote/archive/refs/tags/v_0.1.tar.gz',
     keywords = ['Easy Remote'],
     classifiers=[
         'Development Status :: 4 - Beta',
