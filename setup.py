@@ -5,11 +5,11 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="pyeasyremote",
-    version="0.1",
+    version="0.2",
     author="Jeroen Tas",
     author_email = 'hi@j45.nl',
     url = 'https://github.com/Jeroen-45/pyeasyremote',
-    description="Control Easy Remote supporting DMX Lighting control software using python",
+    description="Control Easy Remote supporting DMX lighting control software using python",
     long_description=long_description,
     long_description_content_type="text/markdown",
     packages=setuptools.find_packages(),
