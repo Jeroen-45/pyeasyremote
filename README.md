@@ -5,7 +5,7 @@ pyeasyremote can be used to control buttons, sliders, pan tilt controls and colo
 
 # Usage
 ````python
-from easyremote import EasyRemote
+from pyeasyremote import EasyRemote
 
 # Initialize an EasyRemote
 er = EasyRemote("192.168.2.4")
