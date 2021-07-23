@@ -52,6 +52,8 @@ class EasyRemoteObject:
         """
         if type == 'btn':
             return EasyRemoteButton(er, id, page, name)
+        elif type == 'sld':
+            return EasyRemoteSlider(er, id, page, name)
         elif type == 'cw':
             return EasyRemoteColorwheel(er, id, page, name)
         else:
@@ -74,6 +76,24 @@ class EasyRemoteButton(EasyRemoteObject):
         self.er.s.sendto((f"action=update_element&id={self.id}"
                           f"&page={self.page}&value={int(state)}"
                           "&type=btn&event=up").encode(), self.er.addr)
+
+
+class EasyRemoteSlider(EasyRemoteObject):
+    """
+    This object represents a slider in EasyRemote.
+    """
+    def __init__(self, er: EasyRemote, id: int, page: int, name: str) -> None:
+        super().__init__(er, id, page, name)
+
+    def set_value(self, value: int) -> None:
+        """
+        Sets the slider to the given value.
+        """
+        # Send EasyRemote update_element event for this slider
+        # with the given value.
+        self.er.s.sendto((f"action=update_element&id={self.id}"
+                          f"&page={self.page}&value={value}"
+                          "&type=sld&event=up").encode(), self.er.addr)
 
 
 class EasyRemoteColorwheel(EasyRemoteObject):
