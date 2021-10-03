@@ -7,6 +7,7 @@ class EasyRemote:
     def __init__(self, ip: str, port: int=4003) -> None:
         self.addr = (ip, port)
         self.s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        self.s.settimeout(5)
         self.objects = {}
 
         # Get objects and store them in a name->object dict
@@ -14,22 +15,25 @@ class EasyRemote:
         # we just pass 0 and 0. Note that the consequence of this decision is
         # that all the returned x, y positioning info for the objects is
         # useless, because it will all be 0,0 too.
-        self.s.sendto("action=ready&width=0&height=0\r\n".encode(), self.addr)
-        recv_objects = True
-        while recv_objects:
-            msg = self.s.recvfrom(1024)[0].decode()
-            action = parse_qs(msg)
+        try:
+            self.s.sendto("action=ready&width=0&height=0\r\n".encode(), self.addr)
+            recv_objects = True
+            while recv_objects:
+                msg = self.s.recvfrom(1024)[0].decode()
+                action = parse_qs(msg)
 
-            # Add appropriate object for each incoming set_layer action
-            if action["action"][0] == "set_layer":
-                self.objects[action["name"][0]] = \
-                    EasyRemoteObject.get_easy_remote_object(
-                        self, int(action["id"][0]), int(action["page"][0]),
-                        action["name"][0], action["type"][0])
+                # Add appropriate object for each incoming set_layer action
+                if action["action"][0] == "set_layer":
+                    self.objects[action["name"][0]] = \
+                        EasyRemoteObject.get_easy_remote_object(
+                            self, int(action["id"][0]), int(action["page"][0]),
+                            action["name"][0], action["type"][0])
 
-            # End the loop when the done action is received
-            if action["action"][0] == "done":
-                recv_objects = False
+                # End the loop when the done action is received
+                if action["action"][0] == "done":
+                    recv_objects = False
+        except socket.timeout:
+            self.objects = {}
 
 
 class EasyRemoteObject:

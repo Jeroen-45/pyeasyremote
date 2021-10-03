@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="pyeasyremote",
-    version="0.2",
+    version="1.0",
     author="Jeroen Tas",
     author_email = 'hi@j45.nl',
     url = 'https://github.com/Jeroen-45/pyeasyremote',

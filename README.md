@@ -21,3 +21,5 @@ er.objects["My Colorwheel"].set_rgb(255, 0, 0)
 # Set a colorwheel named "My Colorwheel" to red using HSV
 er.objects["My Colorwheel"].set_hsv(0.0, 1.0, 1.0)
 ````
+In the case that initialization fails due to a timeout on the response from
+your lighting software, the objects dict will be empty.
